@@ -1,3 +1,2 @@
-names_zonea: myinstance1,myinstance2,myinstance3,myinstance4,myinstance5,master1
+names_zonea: myinstance1,myinstance2,myinstance3,myinstance4,myinstance5
 zonea: australia-southeast1-a
-lb_membersa: australia-southeast1-a/myinstance1,australia-southeast1-a/myinstance2,australia-southeast1-a/myinstance3,australia-southeast1-a/myinstance4,australia-southeast1-a/myinstance5,australia-southeast1-a/master1

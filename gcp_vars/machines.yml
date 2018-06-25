@@ -1,2 +1,2 @@
 machine_type: f1-micro
-image: centos-7
+image: debian-8

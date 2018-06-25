@@ -1,22 +1,36 @@
 ---
 # compute-video-demo-ansible
 - name: Create Compute Engine instances
-  hosts: local
-  gather_facts: False
+  hosts: localhost
+  connection: local
+  gather_facts: True
   vars_files:
     - gcp_vars/secrets/auth.yml
     - gcp_vars/machines.yml
     - gcp_vars/zone.yml
+    - gcp_vars/zone-master.yml
   tasks:
-    - name: Bring up the instances in the data zone
+    # - name: Bring up the instances in the data zone
+    #   gce:
+    #     instance_names: "{{ names_zonea }}"
+    #     machine_type: "{{ machine_type }}"
+    #     image: "{{ image }}"
+    #     zone: "{{ zonea }}"
+    #     project_id: "{{ project_id }}"
+    #     credentials_file: "{{ credentials_file }}"
+    #     service_account_email: "{{ service_account_email }}"
+    #     state: present
+    #   register: gcea
+    - name: Bring up the master node
       gce:
-        instance_names: "{{ names_zonea }}"
+        instance_names: "{{ names_zone_master }}"
         machine_type: "{{ machine_type }}"
         image: "{{ image }}"
-        zone: "{{ zonea }}"
+        zone: "{{ zone_master }}"
         project_id: "{{ project_id }}"
         credentials_file: "{{ credentials_file }}"
         service_account_email: "{{ service_account_email }}"
+        state: present
       register: gcea
   post_tasks:
     - name: Wait for SSH for instances in data zone
