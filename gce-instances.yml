@@ -4,9 +4,9 @@
   hosts: local
   gather_facts: False
   vars_files:
-    - gce_vars/secrets/auth.yml
-    - gce_vars/machines.yml
-    - gce_vars/zone.yml
+    - gcp_vars/secrets/auth.yml
+    - gcp_vars/machines.yml
+    - gcp_vars/zone.yml
   tasks:
     - name: Bring up the instances in the data zone
       gce:
