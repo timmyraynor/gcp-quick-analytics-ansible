@@ -45,18 +45,19 @@
     - name: Save host data for data zone
       add_host: hostname={{ item.public_ip }} groupname=gce_master_ip
       with_items: "{{ gce_master.instance_data }}"
+    - debug:
+        msg: "{{ groups['gce_master_ip'] }}"
+    - set_facts:
+        redis_bind_ip: "{{ groups['gce_master_ip'] }}"
 
-- debug:
-    msg: "{{ groups['gce_master_ip'] }}"
-
-# - name: Create redis on the master
-#   hosts: gce_master_ip
-#   become: True
-#   gather_facts: True
-#   vars_files:
-#     - gcp_vars/secrets/auth.yml
-#     - gcp_vars/machines.yml
-#     - gcp_vars/zone.yml
-#     - gcp_vars/zone-master.yml
-#   roles:
-#     - { role: redis, tags: ["redis"] }
+- name: Create redis on the master
+  hosts: gce_master_ip
+  become: True
+  gather_facts: True
+  vars_files:
+    - gcp_vars/secrets/auth.yml
+    - gcp_vars/machines.yml
+    - gcp_vars/zone.yml
+    - gcp_vars/zone-master.yml
+  roles:
+    - { role: redis, tags: ["redis"] }
