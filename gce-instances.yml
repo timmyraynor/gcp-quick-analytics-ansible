@@ -24,6 +24,8 @@
           - compute-rw
           - storage-full
         state: present
+        tags:
+          - slaves
       register: gcea
     - name: Bring up the master node
       gce:
@@ -39,6 +41,8 @@
           - compute-rw
           - storage-full
         state: present
+        tags:
+          - master
       register: gce_master
   post_tasks:
     - name: Wait for SSH for instances in data zone
