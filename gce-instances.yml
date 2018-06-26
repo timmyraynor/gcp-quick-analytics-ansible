@@ -31,7 +31,7 @@
         credentials_file: "{{ credentials_file }}"
         service_account_email: "{{ service_account_email }}"
         state: present
-      register: gcea
+      register: gce_master
   post_tasks:
     - name: Wait for SSH for instances in data zone
       wait_for: delay=1 host={{ item.public_ip }} port=22 state=started timeout=30
@@ -39,3 +39,12 @@
     - name: Save host data for data zone
       add_host: hostname={{ item.public_ip }} groupname=gce_instances_ips
       with_items: "{{ gcea.instance_data }}"
+    - name: Wait for SSH for instances in master group
+      wait_for: delay=1 host={{ item.public_ip }} port=22 state=started timeout=30
+      with_items: "{{ gce_master.instance_data }}"
+    - name: Save host data for data zone
+      add_host: hostname={{ item.public_ip }} groupname=gce_master_ip
+      with_items: "{{ gce_master.instance_data }}"
+
+# - name: Create redis on the master
+#   hosts: gce_master
