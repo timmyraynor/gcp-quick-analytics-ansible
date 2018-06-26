@@ -19,6 +19,10 @@
         project_id: "{{ project_id }}"
         credentials_file: "{{ credentials_file }}"
         service_account_email: "{{ service_account_email }}"
+        service_account_permissions:
+          - bigquery
+          - compute-rw
+          - storage-full
         state: present
       register: gcea
     - name: Bring up the master node
@@ -30,6 +34,10 @@
         project_id: "{{ project_id }}"
         credentials_file: "{{ credentials_file }}"
         service_account_email: "{{ service_account_email }}"
+        service_account_permissions:
+          - bigquery
+          - compute-rw
+          - storage-full
         state: present
       register: gce_master
   post_tasks:
@@ -47,11 +55,12 @@
       with_items: "{{ gce_master.instance_data }}"
     - debug:
         msg: "{{ groups['gce_master_ip'] }}"
-    - set_facts:
+    - set_fact:
         redis_bind_ip: "{{ groups['gce_master_ip'] }}"
 
 - name: Create redis on the master
   hosts: gce_master_ip
+  connection: ssh
   become: True
   gather_facts: True
   vars_files:
