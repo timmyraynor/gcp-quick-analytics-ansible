@@ -46,14 +46,17 @@
       add_host: hostname={{ item.public_ip }} groupname=gce_master_ip
       with_items: "{{ gce_master.instance_data }}"
 
-- name: Create redis on the master
-  hosts: gce_master_ip
-  become: True
-  gather_facts: True
-  vars_files:
-    - gcp_vars/secrets/auth.yml
-    - gcp_vars/machines.yml
-    - gcp_vars/zone.yml
-    - gcp_vars/zone-master.yml
-  roles:
-    - { role: redis, tags: ["redis"] }
+- debug:
+    msg: "{{ groups['gce_master_ip'] }}"
+
+# - name: Create redis on the master
+#   hosts: gce_master_ip
+#   become: True
+#   gather_facts: True
+#   vars_files:
+#     - gcp_vars/secrets/auth.yml
+#     - gcp_vars/machines.yml
+#     - gcp_vars/zone.yml
+#     - gcp_vars/zone-master.yml
+#   roles:
+#     - { role: redis, tags: ["redis"] }
