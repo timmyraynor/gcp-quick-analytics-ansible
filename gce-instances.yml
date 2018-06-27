@@ -19,11 +19,8 @@
         project_id: "{{ project_id }}"
         credentials_file: "{{ credentials_file }}"
         service_account_email: "{{ service_account_email }}"
-        service_account_permissions:
-          - bigquery
-          - compute-rw
-          - storage-full
         state: present
+        metadata: '{"enable-oslogin":"True"}'
         tags:
           - slaves
       register: gcea
@@ -36,10 +33,7 @@
         project_id: "{{ project_id }}"
         credentials_file: "{{ credentials_file }}"
         service_account_email: "{{ service_account_email }}"
-        service_account_permissions:
-          - bigquery
-          - compute-rw
-          - storage-full
+        metadata: '{"enable-oslogin":"TRUE"}'
         state: present
         tags:
           - master
