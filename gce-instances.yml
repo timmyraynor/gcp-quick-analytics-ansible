@@ -60,7 +60,7 @@
   hosts: gce_master_ip
   connection: ssh
   become: True
-  gather_facts: True
+  gather_facts: False 
   vars_files:
     - gcp_vars/secrets/auth.yml
     - gcp_vars/machines.yml
