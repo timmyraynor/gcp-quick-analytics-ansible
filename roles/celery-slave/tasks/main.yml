@@ -5,10 +5,50 @@
     name: python-pip
     state: present
 
-- name: Install Celery
+- name: Install dependencies
   pip:
+    name: "{{item}}"
+    state: present
+  with_items:
+    - celery
+    - redis
+    - google-cloud-bigquery
+    - google-cloud-storage
+
+- debug:
+    msg: "Recieved IP: {{redis_bind_ip}}"
+
+- name: Create celeryd service
+  copy:
+    src: files/celeryd
+    dest: /etc/init.d/celeryd
+    mode: a+x
+
+- name: Create celeryd config
+  template:
+    src: templates/celeryd.j2
+    dest: /etc/default/celeryd
+
+- name: Create celery user
+  user:
     name: celery
     state: present
 
-- name: Create celeryd service
-  shell: "nohup celery -A celery_crawler worker </dev/null >/dev/null 2>&1 &"
+- name: Copy over the crawler script for workers
+  copy:
+    src: files/quick-crawler/collector/crawler.py
+    dest: /tmp/crawler.py
+
+- name: Create credential repository
+  file:
+    path: /tmp/credentials-repository
+    state: directory
+
+- name: Copy over the crawler credentials for workers
+  copy:
+    src: files/quick-crawler/credentials-repository/service-account.json
+    dest: /tmp/credentials-repository/service-account.json
+
+- name: start celeryd service
+  become: True
+  command: service celeryd restart

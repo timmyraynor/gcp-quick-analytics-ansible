@@ -9,7 +9,11 @@ CELERY_BIN="$(which celery)"
 
 # App instance to use
 # comment out this line if you don't use an app
-CELERY_APP="{{app_name}}"
+CELERY_APP="crawler"
+
+CELERYD_CHDIR=/tmp
+
+CELERYD_OPTS="-b redis://{{redis_bind_ip}}:6379/0"
 
 
 # Set logging level to DEBUG

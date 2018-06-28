@@ -42,15 +42,17 @@
     - name: Wait for SSH for instances in data zone
       wait_for: delay=1 host={{ item.public_ip }} port=22 state=started timeout=30
       with_items: "{{ gcea.instance_data }}"
-    - name: Save host data for data zone
-      add_host: hostname={{ item.public_ip }} groupname=gce_instances_ips
-      with_items: "{{ gcea.instance_data }}"
     - name: Wait for SSH for instances in master group
       wait_for: delay=1 host={{ item.public_ip }} port=22 state=started timeout=30
       with_items: "{{ gce_master.instance_data }}"
     - name: Save host data for data zone
       add_host: hostname={{ item.public_ip }} groupname=gce_master_ip
+      redis_bind_ip: "{{item.public_ip}}"
       with_items: "{{ gce_master.instance_data }}"
+    - name: Save host data for master zone
+      add_host: hostname={{ item.public_ip }} groupname=gce_instances_ips
+      redis_bind_ip: "{{ groups['gce_master_ip'] }}"
+      with_items: "{{ gcea.instance_data }}"
     - debug:
         msg: "{{ groups['gce_master_ip'] }}"
     - set_fact:
@@ -68,3 +70,18 @@
     - gcp_vars/zone-master.yml
   roles:
     - { role: redis, tags: ["redis"] }
+
+- name: Create redis worker on the slaves
+  hosts: gce_instances_ips
+  connection: ssh
+  become: True
+  gather_facts: False
+  vars:
+    redis_bind_ip: "{{ groups['gce_master_ip'][0] }}"
+  vars_files:
+    - gcp_vars/secrets/auth.yml
+    - gcp_vars/machines.yml
+    - gcp_vars/zone.yml
+    - gcp_vars/zone-master.yml
+  roles:
+    - celery-slave
