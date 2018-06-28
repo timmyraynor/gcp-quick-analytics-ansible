@@ -1,0 +1,14 @@
+---
+
+- name: Install Pip is missed
+  yum:
+    name: python-pip
+    state: present
+
+- name: Install Celery
+  pip:
+    name: celery
+    state: present
+
+- name: Create celeryd service
+  shell: "nohup celery -A celery_crawler worker </dev/null >/dev/null 2>&1 &"
