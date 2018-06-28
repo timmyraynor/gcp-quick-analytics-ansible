@@ -1,3 +1,5 @@
 ansible
 apache-libcloud
 pycrypto
+google-cloud-bigquery
+google-cloud-storage
